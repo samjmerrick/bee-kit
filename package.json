@@ -1,0 +1,2 @@
+{ "name": "bee-kit", "version": "0.1.0", "type": "module", "main": "src/index.js", "exports": { ".": "./src/index.js", "./client": "./src/client.js", "./manifest": "./src/manifest.js" },
+  "bin": { "bee-deploy": "bin/deploy.mjs" }, "scripts": { "test": "node --test test" } }

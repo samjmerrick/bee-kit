@@ -1,0 +1,17 @@
+name: Deploy bee app
+description: Validates app.json, migrates the app's D1, deploys the Worker and registers it with the bee gateway.
+inputs:
+  cloudflare-api-token: { description: Cloudflare API token, required: true }
+  cloudflare-account-id: { description: Cloudflare account id, required: true }
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with: { node-version: 22 }
+    - run: npm ci || npm install
+      shell: bash
+    - run: node "${{ github.action_path }}/bin/deploy.mjs"
+      shell: bash
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare-api-token }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare-account-id }}

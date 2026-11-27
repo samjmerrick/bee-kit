@@ -1,0 +1,6 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width"><title>Hello</title>
+<h1>Hello <span id=n>…</span></h1><pre id=o></pre>
+<script type=module>
+const r = await fetch("/hello/api/me"); const j = await r.json();
+n.textContent = j.user.email; o.textContent = JSON.stringify(j, null, 2);
+</script>

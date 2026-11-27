@@ -1,0 +1,1 @@
+{ "name": "hello", "private": true, "type": "module", "dependencies": { "bee-kit": "file:../.." } }
