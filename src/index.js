@@ -6,7 +6,7 @@ export function app(manifestName, handler) {
     async fetch(request, env, ctx) {
       const url = new URL(request.url);
       if (url.pathname === `/${manifestName}/health`) return new Response("ok");
-      const user = await env.BEE.identify(request, manifestName);
+      const user = await env.BEE.identify(request.headers, manifestName);
       if (!user) return new Response("Not signed in or no access", { status: 401 });
       const bee = {
         user,
