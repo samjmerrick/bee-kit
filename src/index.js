@@ -6,6 +6,8 @@ export function app(manifestName, handler) {
     async fetch(request, env, ctx) {
       const url = new URL(request.url);
       if (url.pathname === `/${manifestName}/health`) return new Response("ok");
+      // Paths the app opts out of the sign-in check (it does its own, e.g. a bearer token for a background runner).
+      if (handler.open?.(url.pathname)) return (await handler.fetch(request, env, ctx, null)) ?? new Response("Not found", { status: 404 });
       const user = await env.BEE.identify(request.headers, manifestName);
       if (!user) return new Response("Not signed in or no access", { status: 401 });
       const bee = {

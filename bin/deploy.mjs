@@ -61,6 +61,21 @@ if (!(access.destinations ?? []).some((d) => d.uri === dest)) {
   await cf(`/access/apps/${access.id}`, { method: "PUT", body: JSON.stringify(body) });
 }
 
+// Paths the app guards itself (e.g. a bearer token for a background runner) are let past Access: a more specific
+// application with a bypass policy, which Access prefers over the broader "Bee apps" one.
+for (const open of manifest.open ?? []) {
+  const uri = `${HOST}${manifest.path}${open}`;
+  const appName = `Bee app ${name}: ${open}`;
+  const exists = (await cf("/access/apps")).find((a) => a.name === appName);
+  if (!exists) {
+    await cf("/access/apps", { method: "POST", body: JSON.stringify({
+      name: appName, type: "self_hosted", destinations: [{ type: "public", uri }], session_duration: "24h",
+      policies: [{ name: "Bypass (app checks its own token)", decision: "bypass", include: [{ everyone: {} }] }],
+    }) });
+    console.log(`Access bypass for ${uri}`);
+  }
+}
+
 log("register");
 await cf(`/storage/kv/namespaces/${KV_NS}/values/app:${name}`, { method: "PUT", body: JSON.stringify(manifest), headers: { "Content-Type": "text/plain" } });
 

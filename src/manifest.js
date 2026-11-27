@@ -10,6 +10,7 @@ export function validateManifest(m) {
   if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(m.project ?? "")) err("project (the bee-database project whose roles apply) is required");
   for (const t of m.tools ?? []) if (!KNOWN_TOOLS.has(t)) err(`unknown tool "${t}"`);
   for (const j of m.jobs ?? []) if (!JOB_KINDS.has(j)) err(`unknown job kind "${j}"`);
+  for (const o of m.open ?? []) if (!/^\/[A-Za-z0-9_\-\/]+$/.test(o)) err(`open paths look like "/_bee", not "${o}"`);
   for (const s of m.schedules ?? []) if (!s.cron || !s.handler) err("each schedule needs cron and handler");
   for (const o of m.offers ?? []) if (!o.name || !o.description) err("each offer needs name and description");
   return m;
